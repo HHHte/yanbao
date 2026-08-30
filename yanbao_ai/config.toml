@@ -1,0 +1,36 @@
+# 研报本地长效 AI 系统 · 本机真实配置（已在 .gitignore，绝不入库）
+# Claude 走中转站（端点跟随 cc-switch）+ 阿里云 qwen 嵌入。
+
+[llm]
+# 生成 / 抽取 / 重排：Claude，走中转站。
+# base_url/api_key **故意留空** → 自动读 ~/.claude/settings.json 的
+#   env.ANTHROPIC_BASE_URL / env.ANTHROPIC_AUTH_TOKEN。
+# 这样 cc-switch 切到哪家中转站，本系统就自动跟到哪家，无需改配置。
+#   （2026-07-28 实测：cc-switch 已从 k40 切到 d67.shengqainbang.cn，无缝接上。）
+# 若要钉死某个端点、不跟随 cc-switch，就在这里显式填 base_url + api_key。
+#
+# 模型：2026-07-28 起用 claude-opus-5（已在 d67 实测可用；4-8 也仍在服务）。
+# 中转站只服务单一档位时，gen 与 cheap 填同一个模型即可（填不存在的型号会 404）；
+# 若之后开放便宜档，把 model_cheap 换成便宜档可显著降本。
+base_url = ""
+api_key_env = "YANBAO_LLM_KEY"
+model_gen = "claude-opus-5"
+model_cheap = "claude-opus-5"
+
+[embed]
+# 向量化：阿里云 qwen3.7-text-embedding @ 1024 维，OpenAI 兼容端点。
+# 批量硬上限 20（qwen 端点限制），超过即 400。
+#
+# enabled = false（2026-08-27）：qwen key 已被封（实测 401 "API-key is blocked"），
+# 暂不使用嵌入。检索退纯 BM25（FTS5 原生打分，零成本、零外部依赖）。
+# **key 与 base_url 故意原样保留**，只是不再调用——将来换新 key 时改回 true 即可，
+# 不必翻历史找端点。注意库里 178,679 块的向量全都在（chunk_vec 零缺失），
+# 关掉只是不再"新增/查询"向量；期间 --no-embed 索引的新块会缺向量，
+# 将来恢复后跑 `python -m app.cli embed-existing` 回填（不重切块、断点续跑）。
+enabled = false
+base_url = "https://ws-lqf109zxphujq5hj.cn-beijing.maas.aliyuncs.com/compatible-mode/v1"
+api_key_env = "YANBAO_EMBED_KEY"
+api_key = "sk-ws-H.EIDLLHH.g8Q5.MEUCIQCYTZNVVB0dxy03kx7vJ1a8sSQdpxaQGxyPIXKNKue7wgIgIhTBjzfVOz4z6-uquqHKl7ZwVttV0llBLx54hz9YNhA"
+model = "qwen3.7-text-embedding"
+dimensions = 1024
+batch_size = 20

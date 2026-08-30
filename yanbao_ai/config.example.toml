@@ -1,0 +1,28 @@
+# 研报本地长效 AI 系统 · 配置示例
+# 用法：复制本文件为 config.toml（config.toml 已在 .gitignore，不入库）。
+# 密钥优先走环境变量；本文件只放占位符，切勿写入真实 key。
+
+[paths]
+# 以下三项默认从文件位置自动派生（仓库根下的 mineru_pipeline/… 与 yanbao_ai/data/），
+# 整棵树搬到别处也不会失效——一般无需填写。只有当产物不在默认位置时才取消注释覆盖。
+# 键名必须与此一致：canonical / manifest / db（缺失即报错，不会静默走空库）。
+# canonical = "E:/yanbao/mineru_pipeline/canonical"
+# manifest  = "E:/yanbao/mineru_pipeline/manifest/manifest.jsonl"
+# db        = "E:/yanbao/yanbao_ai/data/yanbao.db"
+
+[llm]
+# 生成 / 抽取 / 重排：Claude，走中转站。
+# 留空（base_url/api_key_env 皆空或缺省）时，自动读 ~/.claude/settings.json 的
+#   env.ANTHROPIC_BASE_URL / env.ANTHROPIC_AUTH_TOKEN —— cc-switch 切哪家就跟到哪家。
+base_url = ""
+api_key_env = "YANBAO_LLM_KEY"
+model_gen = "claude-opus-4-8"      # 生成/长答案；或 claude-sonnet
+model_cheap = "claude-haiku"       # 抽取/重排/打标
+
+[embed]
+# 向量化：OpenAI 官方 text-embedding-3-large，截断到 1024 维（已定）。
+# base_url 留默认走官方；如需切中转站的 OpenAI 兼容端点，改这一行即可。
+base_url = "https://api.openai.com/v1"
+api_key_env = "YANBAO_EMBED_KEY"
+model = "text-embedding-3-large"
+dimensions = 1024
