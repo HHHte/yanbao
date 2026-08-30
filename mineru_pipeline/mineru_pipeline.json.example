@@ -1,0 +1,19 @@
+{
+  "root": "E:/yanbao/mineru_pipeline",
+  "input_dir": "E:/yanbao/2026年7月",
+  "recursive": true,
+  "api_base": "https://mineru.net/api/v4",
+  "token_env": "MINERU_API_KEY",
+  "model_version": "pipeline",
+  "is_ocr": false,
+  "batch_size": 45,
+  "upload_workers": 6,
+  "download_workers": 4,
+  "poll_seconds": 10,
+  "max_polls": 180,
+  "api_retries": 6,
+  "transfer_retries": 3,
+  "retry_base_seconds": 5,
+  "retry_max_seconds": 60,
+  "batch_delay_seconds": 5
+}
